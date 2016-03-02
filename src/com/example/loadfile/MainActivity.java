@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -246,8 +247,13 @@ public class MainActivity extends Activity implements OnClickListener{
 					}
 	                File saveFilePath = new File(folder, mFileName); 
 	                System.out.println(saveFilePath); 
-	                mDownNotification = new Notification.Builder(MainActivity.this)
-	                .setSmallIcon(android.R.drawable.stat_sys_download).setContentTitle("准备下载...").build();
+	                if (Build.VERSION.SDK_INT < 16) {
+	                	mDownNotification = new Notification.Builder(MainActivity.this)
+	                	.setSmallIcon(android.R.drawable.stat_sys_download).setContentTitle("准备下载...").getNotification();
+					}else {
+						mDownNotification = new Notification.Builder(MainActivity.this)
+						.setSmallIcon(android.R.drawable.stat_sys_download).setContentTitle("准备下载...").build();
+					}
 	                mDownNotification.flags = Notification.FLAG_ONGOING_EVENT; 
 	                mDownNotification.flags = Notification.FLAG_NO_CLEAR; 
 	                mContentView = new RemoteViews(mContext.getPackageName(), 
@@ -266,9 +272,17 @@ public class MainActivity extends Activity implements OnClickListener{
 	                    PendingIntent contentIntent = PendingIntent.getActivity( 
 	                            mContext, 0, intent, 0); 
 	                    
-	                    Notification notification = new Notification.Builder(MainActivity.this)
-	                    .setSmallIcon(R.drawable.appicon).setContentTitle("下载成功")
-	                    .setContentText("点击安装").setContentIntent(contentIntent).build();
+	                    Notification notification;
+	                    
+	                    if (Build.VERSION.SDK_INT < 16) {
+	                    	notification = new Notification.Builder(MainActivity.this)
+	                    	.setSmallIcon(R.drawable.appicon).setContentTitle("下载成功")
+	                    	.setContentText("点击安装").setContentIntent(contentIntent).getNotification();
+						}else {
+							notification = new Notification.Builder(MainActivity.this)
+							.setSmallIcon(R.drawable.appicon).setContentTitle("下载成功")
+							.setContentText("点击安装").setContentIntent(contentIntent).build();
+						}
 	                    notification.flags = Notification.FLAG_ONGOING_EVENT; 
 	                    notification.flags = Notification.FLAG_AUTO_CANCEL; 
 	                    mNotifManager.notify(R.drawable.appicon, notification); 
@@ -276,9 +290,16 @@ public class MainActivity extends Activity implements OnClickListener{
 	                    msg.what = MSG_FAILURE; 
 	                    PendingIntent contentIntent = PendingIntent.getActivity( 
 	                            mContext, 0, new Intent(), 0); 
-	                    Notification notification = new Notification.Builder(MainActivity.this)
-	                    .setSmallIcon(R.drawable.appicon).setContentTitle("下载失败")
-	                    .setContentIntent(contentIntent).build();
+	                    Notification notification;
+	                    if (Build.VERSION.SDK_INT < 16) {
+	                    	notification = new Notification.Builder(MainActivity.this)
+	                    	.setSmallIcon(R.drawable.appicon).setContentTitle("下载失败")
+	                    	.setContentIntent(contentIntent).getNotification();
+	                    }else {
+	                    	notification = new Notification.Builder(MainActivity.this)
+	                    	.setSmallIcon(R.drawable.appicon).setContentTitle("下载失败")
+	                    	.setContentIntent(contentIntent).build();
+						}
 	                    notification.flags = Notification.FLAG_AUTO_CANCEL; 
 	                    mNotifManager.notify(R.drawable.appicon, notification); 
 	                } 
